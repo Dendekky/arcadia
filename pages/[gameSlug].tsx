@@ -32,7 +32,7 @@ export default function GameSlugPage() {
     if (router.isReady && gameSlug && typeof gameSlug === 'string' && !gameSlugMap[gameSlug]) {
       router.replace('/', undefined, { shallow: true });
     }
-  }, [router.isReady, gameSlug]);
+  }, [router.isReady, gameSlug, router]);
 
   // Don't render anything until router is ready
   if (!router.isReady || !gameSlug || typeof gameSlug !== 'string') {
