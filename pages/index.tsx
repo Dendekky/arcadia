@@ -75,16 +75,16 @@ export default function Home() {
     <div className={`${geistMono.variable} min-h-screen bg-gray-900 flex items-center justify-center p-4`}>
       {selectedGame ? (
         <div className="w-full max-w-4xl h-[80vh] flex flex-col">
-          <h1 className="text-3xl text-green-500 font-mono mb-4 text-center">
+          <h1 className="text-3xl text-green-500 font-mono mb-4 text-center pixel-text">
             Arcade Throwback Collection
           </h1>
-          <div className="flex-1 bg-black rounded-lg overflow-hidden border-4 border-white relative">
+          <div className="flex-1 bg-black rounded-lg overflow-hidden pixel-border crt-effect relative">
             {mounted && <PhaserGame game={selectedGame} onReturnToMenu={handleBackToMenu} />}
           </div>
         </div>
       ) : (
         <div className="w-full max-w-4xl">
-          <h1 className="text-4xl text-green-500 font-mono mb-8 text-center">
+          <h1 className="text-4xl text-green-500 font-mono mb-8 text-center pixel-text">
             Arcade Throwback Collection
           </h1>
           <GameMenu onGameSelect={handleGameSelect} />

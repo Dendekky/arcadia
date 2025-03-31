@@ -30,19 +30,19 @@ export function GameDialog({
 }: GameDialogProps) {
   return (
     <Dialog open={open}>
-      <DialogContent className="border-4 border-dashed border-white max-w-md">
+      <DialogContent className="pixel-border crt-effect bg-gray-900 max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-xl">
+          <DialogTitle className="text-xl pixel-text">
             {status === 'gameOver' ? '💀 ' : '🎮 '}
             {title}
           </DialogTitle>
-          <DialogDescription className="mt-2">{description}</DialogDescription>
+          <DialogDescription className="mt-2 text-green-400 font-mono">{description}</DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex flex-row justify-center gap-4 mt-4">
           {status === 'gameOver' && onRetry && (
             <Button 
               onClick={onRetry}
-              className="bg-red-500 hover:bg-red-600 text-white border-2 border-white"
+              className="bg-red-500 hover:bg-red-600 text-white font-mono pixel-text"
             >
               Try Again
             </Button>
@@ -50,7 +50,7 @@ export function GameDialog({
           {status === 'levelComplete' && onNextLevel && (
             <Button 
               onClick={onNextLevel}
-              className="bg-green-500 hover:bg-green-600 text-white border-2 border-white"
+              className="bg-green-500 hover:bg-green-600 text-white font-mono pixel-text"
             >
               Next Level
             </Button>
@@ -58,7 +58,7 @@ export function GameDialog({
           <Button 
             onClick={onClose} 
             variant="outline"
-            className="border-2 border-white text-green-400 hover:bg-gray-800"
+            className="border-2 border-white text-green-400 hover:bg-gray-800 font-mono"
           >
             Back to Menu
           </Button>

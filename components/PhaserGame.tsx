@@ -8,15 +8,33 @@ import PingPongScene from '../scenes/PingPongScene';
 import ShootingGameScene from '../scenes/ShootingGameScene';
 import { GameDialog } from './GameDialog';
 
+// Type for dialog callbacks that are passed to scenes
+type DialogCallbacks = {
+  onGameOver?: (score?: number) => void;
+  onLevelComplete?: (level: number, score?: number) => void;
+};
+
+// Type for init data passed to scenes
+interface SceneInitData {
+  dialogCallbacks?: DialogCallbacks;
+}
+
 interface PhaserGameProps {
   game?: string;
   onReturnToMenu: () => void;
 }
 
+// Interface for scene methods used by PhaserGame
+interface GameSceneInterface extends Phaser.Scene {
+  resetGame?: () => void;
+  resumeGame?: () => void;
+  init?: (data: SceneInitData) => void;
+}
+
 export default function PhaserGame({ game = 'Test', onReturnToMenu }: PhaserGameProps) {
   const gameRef = useRef<Phaser.Game | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const activeSceneRef = useRef<Phaser.Scene | null>(null);
+  const activeSceneRef = useRef<GameSceneInterface | null>(null);
   const [dialogState, setDialogState] = useState<{
     open: boolean;
     title: string;
@@ -28,24 +46,6 @@ export default function PhaserGame({ game = 'Test', onReturnToMenu }: PhaserGame
     description: '',
     status: 'gameOver',
   });
-
-  // Function to determine which scene to use based on the game prop
-  const getSceneForGame = (): typeof Phaser.Scene => {
-    switch (game) {
-      case 'Whack-a-Mole':
-        return WhackAMoleScene;
-      case 'Tetris':
-        return TetrisScene;
-      case 'Snake':
-        return SnakeScene;
-      case 'Ping Pong':
-        return PingPongScene;
-      case 'Shooting Game':
-        return ShootingGameScene;
-      default:
-        return TestScene;
-    }
-  };
 
   // Dialog callbacks for the game scenes
   const handleGameOver = (score?: number) => {
@@ -73,8 +73,8 @@ export default function PhaserGame({ game = 'Test', onReturnToMenu }: PhaserGame
   const handleRetry = () => {
     if (activeSceneRef.current) {
       // Call resetGame on the active scene
-      (activeSceneRef.current as any).resetGame?.();
-      (activeSceneRef.current as any).resumeGame?.();
+      activeSceneRef.current.resetGame?.();
+      activeSceneRef.current.resumeGame?.();
     }
     handleCloseDialog();
   };
@@ -82,13 +82,31 @@ export default function PhaserGame({ game = 'Test', onReturnToMenu }: PhaserGame
   const handleNextLevel = () => {
     if (activeSceneRef.current) {
       // Resume the game to proceed to the next level
-      (activeSceneRef.current as any).resumeGame?.();
+      activeSceneRef.current.resumeGame?.();
     }
     handleCloseDialog();
   };
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+
+    // Function to determine which scene to use based on the game prop
+    const getSceneForGame = (): typeof Phaser.Scene => {
+      switch (game) {
+        case 'Whack-a-Mole':
+          return WhackAMoleScene;
+        case 'Tetris':
+          return TetrisScene;
+        case 'Snake':
+          return SnakeScene;
+        case 'Ping Pong':
+          return PingPongScene;
+        case 'Shooting Game':
+          return ShootingGameScene;
+        default:
+          return TestScene;
+      }
+    };
 
     const SceneClass = getSceneForGame();
 
@@ -122,11 +140,11 @@ export default function PhaserGame({ game = 'Test', onReturnToMenu }: PhaserGame
     const setupScene = () => {
       if (gameRef.current) {
         const sceneName = Object.keys(gameRef.current.scene.keys)[0];
-        const scene = gameRef.current.scene.getScene(sceneName);
+        const scene = gameRef.current.scene.getScene(sceneName) as GameSceneInterface;
         
         if (scene) {
           activeSceneRef.current = scene;
-          (scene as any).init?.({
+          scene.init?.({
             dialogCallbacks: {
               onGameOver: handleGameOver,
               onLevelComplete: handleLevelComplete
@@ -151,8 +169,25 @@ export default function PhaserGame({ game = 'Test', onReturnToMenu }: PhaserGame
 
   return (
     <>
-      <div className="relative w-full h-full flex justify-center items-center bg-gray-900">
-        <div ref={containerRef} className="w-full h-full max-w-[800px] max-h-[600px] border-4 border-white" />
+      <div className="relative w-full h-full flex flex-col">
+        <div className="bg-gray-900 p-4 mb-4 rounded-lg flex justify-between items-center pixel-border">
+          <h2 className="text-green-500 font-mono pixel-text text-xl">
+            {game}
+          </h2>
+          <button 
+            onClick={onReturnToMenu}
+            className="bg-gray-800 text-green-500 font-mono px-4 py-2 rounded hover:bg-gray-700 border border-green-500 cursor-pointer"
+          >
+            Back to Menu
+          </button>
+        </div>
+        <div className="relative w-full h-full flex justify-center items-center bg-gray-900">
+          <div 
+            ref={containerRef} 
+            className="w-full h-full max-w-[800px] max-h-[600px] pixel-border crt-effect relative"
+          >
+          </div>
+        </div>
       </div>
       
       <GameDialog
