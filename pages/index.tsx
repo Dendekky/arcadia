@@ -72,26 +72,23 @@ export default function Home() {
   };
 
   return (
-    <div className={`${geistMono.variable} min-h-screen bg-gray-800 flex items-center justify-center p-4`}>
+    <div className={`${geistMono.variable} min-h-screen bg-gray-900 flex items-center justify-center p-4`}>
       {selectedGame ? (
         <div className="w-full max-w-4xl h-[80vh] flex flex-col">
-          <div className="bg-gray-900 p-4 mb-4 rounded-lg flex justify-between items-center">
-            <h2 className="text-green-500 font-mono pixel-text text-xl">
-              {selectedGame}
-            </h2>
-            <button 
-              onClick={handleBackToMenu}
-              className="bg-gray-700 text-green-500 font-mono px-4 py-2 rounded hover:bg-gray-600 cursor-pointer"
-            >
-              Back to Menu
-            </button>
-          </div>
-          <div className="flex-1 bg-black rounded-lg overflow-hidden">
-            {mounted && <PhaserGame game={selectedGame} />}
+          <h1 className="text-3xl text-green-500 font-mono mb-4 text-center">
+            Arcade Throwback Collection
+          </h1>
+          <div className="flex-1 bg-black rounded-lg overflow-hidden border-4 border-white relative">
+            {mounted && <PhaserGame game={selectedGame} onReturnToMenu={handleBackToMenu} />}
           </div>
         </div>
       ) : (
-        <GameMenu onGameSelect={handleGameSelect} />
+        <div className="w-full max-w-4xl">
+          <h1 className="text-4xl text-green-500 font-mono mb-8 text-center">
+            Arcade Throwback Collection
+          </h1>
+          <GameMenu onGameSelect={handleGameSelect} />
+        </div>
       )}
     </div>
   );
