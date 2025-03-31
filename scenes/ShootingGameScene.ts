@@ -297,12 +297,12 @@ export default class ShootingGameScene extends BaseScene {
       // Reduce boss health
       this.bossHealth--;
       this.updateBossHealthBar();
-      this.sound.play('hit');
+      this.playSound('hit');
       
       // Check if boss is defeated
       if (this.bossHealth <= 0) {
         this.enemies?.remove(this.boss, true, true);
-        this.sound.play('explosion');
+        this.playSound('explosion');
         this.enemiesDefeated++;
         this.updateScoreText();
         this.checkLevelComplete();
@@ -310,7 +310,7 @@ export default class ShootingGameScene extends BaseScene {
     } else {
       // Destroy regular enemy
       (enemy as Phaser.Physics.Arcade.Sprite).destroy();
-      this.sound.play('explosion');
+      this.playSound('explosion');
       
       // Update score
       this.enemiesDefeated++;
@@ -327,7 +327,7 @@ export default class ShootingGameScene extends BaseScene {
     (bullet as Phaser.Physics.Arcade.Image).setVisible(false);
     
     // Player hit, lose a life
-    this.sound.play('hit');
+    this.playSound('hit');
     this.updateLives(-1);
     
     // Check if game over
@@ -350,7 +350,7 @@ export default class ShootingGameScene extends BaseScene {
     // Only if enemy isn't the boss
     if (enemy !== this.boss) {
       (enemy as Phaser.Physics.Arcade.Sprite).destroy();
-      this.sound.play('explosion');
+      this.playSound('explosion');
       
       // Lose a life
       this.updateLives(-1);
@@ -433,7 +433,7 @@ export default class ShootingGameScene extends BaseScene {
     
     const bullet = this.bullets.get(this.ship.x, this.ship.y - 20);
     if (bullet) {
-      this.sound.play('shoot');
+      this.playSound('shoot');
       bullet.setActive(true);
       bullet.setVisible(true);
       bullet.setVelocityY(-500);

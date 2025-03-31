@@ -179,7 +179,7 @@ export default class TetrisScene extends BaseScene {
     
     // Check if the rotation is valid
     if (this.isValidMove(this.currentX, this.currentY, rotated)) {
-      this.sound.play('rotate');
+      this.playSound('rotate');
       this.currentShape = rotated;
     }
   }
@@ -191,7 +191,7 @@ export default class TetrisScene extends BaseScene {
     }
     // Lock the tetromino
     this.lockTetromino();
-    this.sound.play('drop');
+    this.playSound('drop');
     // Check for completed lines
     this.checkLines();
     // Spawn a new tetromino
@@ -254,7 +254,7 @@ export default class TetrisScene extends BaseScene {
     
     if (linesCleared > 0) {
       // Play sound
-      this.sound.play('lineClear');
+      this.playSound('lineClear');
       
       // Update lines cleared counter
       this.linesCleared += linesCleared;

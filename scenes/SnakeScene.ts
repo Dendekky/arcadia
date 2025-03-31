@@ -240,7 +240,7 @@ export default class SnakeScene extends BaseScene {
     // Check if snake ate food
     if (this.food && newHead.x === this.food.x && newHead.y === this.food.y) {
       // Play eat sound
-      this.sound.play('eat');
+      this.playSound('eat');
       
       // Increase length counter
       this.currentLength++;
@@ -344,7 +344,7 @@ export default class SnakeScene extends BaseScene {
   
   gameOverHandler() {
     // Play crash sound
-    this.sound.play('crash');
+    this.playSound('crash');
     
     // Stop the movement timer
     if (this.moveTimer) {

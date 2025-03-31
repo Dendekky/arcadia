@@ -13,6 +13,7 @@ export default class BaseScene extends Phaser.Scene {
   protected levelText: Phaser.GameObjects.Text | null = null;
   protected scoreText: Phaser.GameObjects.Text | null = null;
   protected dialogCallbacks: DialogCallbacks | null = null;
+  protected soundsLoaded: boolean = false;
   
   constructor(key: string) {
     super(key);
@@ -24,8 +25,52 @@ export default class BaseScene extends Phaser.Scene {
     }
   }
 
+  preload() {
+    // Load common sound assets
+    this.loadSounds();
+  }
+
   create() {
     this.createUI();
+  }
+
+  loadSounds() {
+    // Common sound effects
+    this.load.audio('bonk', 'sounds/bonk.mp3');
+    this.load.audio('eat', 'sounds/eat.mp3');
+    this.load.audio('score', 'sounds/score.mp3');
+    this.load.audio('levelup', 'sounds/levelup.mp3');
+    this.load.audio('gameover', 'sounds/gameover.mp3');
+    this.load.audio('shoot', 'sounds/shoot.mp3');
+    
+    // Additional game-specific sounds
+    this.load.audio('rotate', 'sounds/rotate.mp3');
+    this.load.audio('drop', 'sounds/drop.mp3');
+    this.load.audio('lineClear', 'sounds/lineClear.mp3');
+    this.load.audio('crash', 'sounds/crash.mp3');
+    this.load.audio('hit', 'sounds/hit.mp3');
+    this.load.audio('explosion', 'sounds/explosion.mp3');
+    
+    // Mark sounds as loaded to avoid duplicating load calls
+    this.soundsLoaded = true;
+
+    // Handle load errors gracefully
+    this.load.on('loaderror', (fileObj: Phaser.Loader.File) => {
+      console.warn(`Error loading audio: ${fileObj.key}`);
+    });
+  }
+
+  // Safe method to play sounds that avoids errors if sound isn't loaded
+  playSound(key: string) {
+    try {
+      if (this.cache.audio.exists(key)) {
+        this.sound.play(key);
+      } else {
+        console.warn(`Sound "${key}" not found in cache`);
+      }
+    } catch (err) {
+      console.warn(`Cannot play sound "${key}": ${err}`);
+    }
   }
 
   createUI() {
@@ -87,6 +132,9 @@ export default class BaseScene extends Phaser.Scene {
     if (this.scoreText) {
       this.scoreText.setText(`Score: ${this.score}`);
     }
+    
+    // Play score sound effect
+    this.playSound('score');
   }
 
   resetGame() {
@@ -110,6 +158,9 @@ export default class BaseScene extends Phaser.Scene {
   nextLevel() {
     this.updateLevel(this.level + 1);
     
+    // Play level up sound
+    this.playSound('levelup');
+    
     // Call level complete dialog callback
     if (this.dialogCallbacks?.onLevelComplete) {
       // Pause the game while dialog is shown
@@ -119,6 +170,9 @@ export default class BaseScene extends Phaser.Scene {
   }
 
   gameOver() {
+    // Play game over sound
+    this.playSound('gameover');
+    
     // Call game over dialog callback
     if (this.dialogCallbacks?.onGameOver) {
       // Pause the game while dialog is shown

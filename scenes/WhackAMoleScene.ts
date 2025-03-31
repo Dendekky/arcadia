@@ -153,7 +153,7 @@ export default class WhackAMoleScene extends BaseScene {
     
     if (mole && mole.visible) {
       // Play bonk sound
-      this.sound.play('bonk');
+      this.playSound('bonk');
       
       // Hide the mole
       mole.setVisible(false);

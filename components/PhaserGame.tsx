@@ -153,12 +153,6 @@ export default function PhaserGame({ game = 'Test', onReturnToMenu }: PhaserGame
     <>
       <div className="relative w-full h-full flex justify-center items-center bg-gray-900">
         <div ref={containerRef} className="w-full h-full max-w-[800px] max-h-[600px] border-4 border-white" />
-        <button 
-          onClick={onReturnToMenu}
-          className="absolute top-4 right-4 bg-gray-800 hover:bg-gray-700 text-green-400 px-2 py-1 rounded-md border-2 border-white text-sm font-mono"
-        >
-          Back to Menu
-        </button>
       </div>
       
       <GameDialog

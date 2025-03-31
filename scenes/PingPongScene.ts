@@ -156,7 +156,7 @@ export default class PingPongScene extends BaseScene {
   
   hitPaddle(ball: Phaser.GameObjects.GameObject, paddle: Phaser.GameObjects.GameObject) {
     // Play hit sound
-    this.sound.play('hit');
+    this.playSound('hit');
     
     // Get ball body
     const ballBody = ball.body as Phaser.Physics.Arcade.Body;
@@ -174,14 +174,14 @@ export default class PingPongScene extends BaseScene {
   hitWall(body: Phaser.Physics.Arcade.Body, up: boolean, down: boolean, left: boolean, right: boolean) {
     // Only play sound for top/bottom hits
     if (up || down) {
-      this.sound.play('hit');
+      this.playSound('hit');
     }
     
     // Check if ball went past paddles (left/right bounds)
     if (left) {
       // AI scores
       this.aiScore++;
-      this.sound.play('score');
+      this.playSound('score');
       this.checkAiWin();
       this.launchBall();
     } else if (right) {
@@ -190,7 +190,7 @@ export default class PingPongScene extends BaseScene {
       if (this.scoreText) {
         this.scoreText.setText(`Score: ${this.playerScore}/${this.targetScore}`);
       }
-      this.sound.play('score');
+      this.playSound('score');
       this.checkPlayerWin();
       this.launchBall();
     }
