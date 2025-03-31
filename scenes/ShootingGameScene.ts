@@ -1,8 +1,14 @@
 import Phaser from 'phaser';
 import BaseScene from './BaseScene';
 
+// Define the callback types properly
+type PhysicsColliderCallback = (
+  object1: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Tilemaps.Tile,
+  object2: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Tilemaps.Tile
+) => void;
+
 export default class ShootingGameScene extends BaseScene {
-  private ship: Phaser.GameObjects.Sprite | null = null;
+  private ship: Phaser.Physics.Arcade.Sprite | null = null;
   private bullets: Phaser.GameObjects.Group | null = null;
   private enemies: Phaser.GameObjects.Group | null = null;
   private enemyBullets: Phaser.GameObjects.Group | null = null;
@@ -14,7 +20,7 @@ export default class ShootingGameScene extends BaseScene {
   private bossHealth: number = 0;
   private maxBossHealth: number = 0;
   private bossHealthBar: Phaser.GameObjects.Graphics | null = null;
-  private scoreText: Phaser.GameObjects.Text | null = null;
+  private gameScoreText: Phaser.GameObjects.Text | null = null;
   private enemiesDefeated: number = 0;
   private isBossLevel: boolean = false;
   private shipSpeed: number = 300;
@@ -96,24 +102,29 @@ export default class ShootingGameScene extends BaseScene {
     
     // Setup collision detection
     if (this.ship && this.bullets && this.enemies && this.enemyBullets) {
-      // Bullet hits enemy
-      this.physics.add.collider(this.bullets, this.enemies, this.bulletHitEnemy, undefined, this);
+      // Bullet hits enemy - using any type for collision callback to avoid type errors
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.physics.add.collider(this.bullets, this.enemies, this.bulletHitEnemy as any, undefined, this);
       
       // Enemy bullet hits player
-      this.physics.add.collider(this.ship, this.enemyBullets, this.enemyBulletHitPlayer, undefined, this);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.physics.add.collider(this.ship, this.enemyBullets, this.enemyBulletHitPlayer as any, undefined, this);
       
       // Player collides with enemy
-      this.physics.add.collider(this.ship, this.enemies, this.playerHitEnemy, undefined, this);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.physics.add.collider(this.ship, this.enemies, this.playerHitEnemy as any, undefined, this);
     }
     
     // Setup keyboard controls
-    this.cursors = this.input.keyboard.createCursorKeys();
-    this.fireKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    if (this.input && this.input.keyboard) {
+      this.cursors = this.input.keyboard.createCursorKeys();
+      this.fireKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    }
     
     // Setup score counter
-    this.scoreText = this.add.text(
+    this.gameScoreText = this.add.text(
       20, 
-      80, 
+      110, 
       `Enemies: ${this.enemiesDefeated}/${this.totalEnemies}`, 
       { 
         font: '18px monospace',
@@ -373,8 +384,8 @@ export default class ShootingGameScene extends BaseScene {
   }
   
   updateScoreText() {
-    if (this.scoreText) {
-      this.scoreText.setText(`Enemies: ${this.enemiesDefeated}/${this.totalEnemies}`);
+    if (this.gameScoreText) {
+      this.gameScoreText.setText(`Enemies: ${this.enemiesDefeated}/${this.totalEnemies}`);
     }
   }
   

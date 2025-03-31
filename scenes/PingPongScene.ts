@@ -9,7 +9,7 @@ export default class PingPongScene extends BaseScene {
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys | null = null;
   private paddleSpeed: number = 400;
   private ballSpeed: number = 300;
-  private scoreText: Phaser.GameObjects.Text | null = null;
+  private matchScoreText: Phaser.GameObjects.Text | null = null;
   private playerScore: number = 0;
   private aiScore: number = 0;
   private targetScore: number = 0;
@@ -74,11 +74,11 @@ export default class PingPongScene extends BaseScene {
       0xffffff
     );
     
-    // Setup score text
-    this.scoreText = this.add.text(
+    // Setup match score text (positioned below the base score text)
+    this.matchScoreText = this.add.text(
       20, 
-      80, 
-      `Score: ${this.playerScore}/${this.targetScore}`, 
+      110, 
+      `Match: ${this.playerScore}/${this.targetScore}`, 
       { 
         font: '18px monospace',
         color: '#00ff00'
@@ -94,7 +94,9 @@ export default class PingPongScene extends BaseScene {
     centerLine.strokePath();
     
     // Setup keyboard controls
-    this.cursors = this.input.keyboard.createCursorKeys();
+    if (this.input.keyboard) {
+      this.cursors = this.input.keyboard.createCursorKeys();
+    }
     
     // Launch the ball
     this.launchBall();
@@ -120,8 +122,11 @@ export default class PingPongScene extends BaseScene {
       ballBody.setBounce(1, 1);
       ballBody.setVelocity(this.ballVelocity.x, this.ballVelocity.y);
       
-      // Setup collision detection
+      // Setup collision detection - intentionally using any type for collider callback
+      // to avoid complex Phaser type system issues
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.physics.add.collider(this.ball, this.playerPaddle, this.hitPaddle, undefined, this);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.physics.add.collider(this.ball, this.aiPaddle, this.hitPaddle, undefined, this);
       
       // Setup bounce event
@@ -154,7 +159,8 @@ export default class PingPongScene extends BaseScene {
     }
   }
   
-  hitPaddle(ball: Phaser.GameObjects.GameObject, paddle: Phaser.GameObjects.GameObject) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  hitPaddle(ball: any, paddle: any) {
     // Play hit sound
     this.playSound('hit');
     
@@ -187,8 +193,8 @@ export default class PingPongScene extends BaseScene {
     } else if (right) {
       // Player scores
       this.playerScore++;
-      if (this.scoreText) {
-        this.scoreText.setText(`Score: ${this.playerScore}/${this.targetScore}`);
+      if (this.matchScoreText) {
+        this.matchScoreText.setText(`Match: ${this.playerScore}/${this.targetScore}`);
       }
       this.playSound('score');
       this.checkPlayerWin();

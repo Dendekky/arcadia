@@ -95,25 +95,27 @@ export default class TetrisScene extends BaseScene {
     );
     
     // Setup keyboard input
-    this.cursors = this.input.keyboard.createCursorKeys();
+    if (this.input && this.input.keyboard) {
+      this.cursors = this.input.keyboard.createCursorKeys();
+      
+      // Create drop timer
+      this.dropTimer = this.time.addEvent({
+        delay: this.dropDelay,
+        callback: this.dropTetromino,
+        callbackScope: this,
+        loop: true
+      });
+      
+      // Add input handlers for keyboard
+      this.input.keyboard.on('keydown-LEFT', this.moveLeft, this);
+      this.input.keyboard.on('keydown-RIGHT', this.moveRight, this);
+      this.input.keyboard.on('keydown-DOWN', this.moveDown, this);
+      this.input.keyboard.on('keydown-UP', this.rotate, this);
+      this.input.keyboard.on('keydown-SPACE', this.hardDrop, this);
+    }
     
     // Spawn initial tetromino
     this.spawnTetromino();
-    
-    // Create drop timer
-    this.dropTimer = this.time.addEvent({
-      delay: this.dropDelay,
-      callback: this.dropTetromino,
-      callbackScope: this,
-      loop: true
-    });
-    
-    // Add input handlers for keyboard
-    this.input.keyboard.on('keydown-LEFT', this.moveLeft, this);
-    this.input.keyboard.on('keydown-RIGHT', this.moveRight, this);
-    this.input.keyboard.on('keydown-DOWN', this.moveDown, this);
-    this.input.keyboard.on('keydown-UP', this.rotate, this);
-    this.input.keyboard.on('keydown-SPACE', this.hardDrop, this);
   }
   
   spawnTetromino() {
@@ -341,11 +343,13 @@ export default class TetrisScene extends BaseScene {
     }
     
     // Remove input handlers
-    this.input.keyboard.off('keydown-LEFT', this.moveLeft);
-    this.input.keyboard.off('keydown-RIGHT', this.moveRight);
-    this.input.keyboard.off('keydown-DOWN', this.moveDown);
-    this.input.keyboard.off('keydown-UP', this.rotate);
-    this.input.keyboard.off('keydown-SPACE', this.hardDrop);
+    if (this.input && this.input.keyboard) {
+      this.input.keyboard.off('keydown-LEFT', this.moveLeft);
+      this.input.keyboard.off('keydown-RIGHT', this.moveRight);
+      this.input.keyboard.off('keydown-DOWN', this.moveDown);
+      this.input.keyboard.off('keydown-UP', this.rotate);
+      this.input.keyboard.off('keydown-SPACE', this.hardDrop);
+    }
     
     // Move to next level
     this.nextLevel();
@@ -361,11 +365,13 @@ export default class TetrisScene extends BaseScene {
     }
     
     // Remove input handlers
-    this.input.keyboard.off('keydown-LEFT', this.moveLeft);
-    this.input.keyboard.off('keydown-RIGHT', this.moveRight);
-    this.input.keyboard.off('keydown-DOWN', this.moveDown);
-    this.input.keyboard.off('keydown-UP', this.rotate);
-    this.input.keyboard.off('keydown-SPACE', this.hardDrop);
+    if (this.input && this.input.keyboard) {
+      this.input.keyboard.off('keydown-LEFT', this.moveLeft);
+      this.input.keyboard.off('keydown-RIGHT', this.moveRight);
+      this.input.keyboard.off('keydown-DOWN', this.moveDown);
+      this.input.keyboard.off('keydown-UP', this.rotate);
+      this.input.keyboard.off('keydown-SPACE', this.hardDrop);
+    }
     
     // Lose a life
     this.updateLives(-1);

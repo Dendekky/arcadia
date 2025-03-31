@@ -1,13 +1,18 @@
 import Phaser from 'phaser';
 import BaseScene from './BaseScene';
 
+type DialogCallbacks = {
+  onGameOver?: (score?: number) => void;
+  onLevelComplete?: (level: number, score?: number) => void;
+};
+
 export default class WhackAMoleScene extends BaseScene {
   private holes: Phaser.GameObjects.Sprite[] = [];
   private moles: Phaser.GameObjects.Sprite[] = [];
   private hammer: Phaser.GameObjects.Sprite | null = null;
-  private score: number = 0;
+  private moleScore: number = 0;
   private targetScore: number = 0;
-  private scoreText: Phaser.GameObjects.Text | null = null;
+  protected scoreText: Phaser.GameObjects.Text | null = null;
   private timeText: Phaser.GameObjects.Text | null = null;
   private timeLeft: number = 0;
   private timer: Phaser.Time.TimerEvent | null = null;
@@ -17,8 +22,9 @@ export default class WhackAMoleScene extends BaseScene {
     super('WhackAMoleScene');
   }
   
-  init(data: any) {
-    this.score = 0;
+  init(data: { dialogCallbacks?: DialogCallbacks } = {}) {
+    super.init(data);
+    this.moleScore = 0;
     // Set difficulty based on level
     this.targetScore = 3 + this.level;
     this.timeLeft = Math.max(20 - this.level, 9); // 20s for level 1, minimum 9s
@@ -42,7 +48,7 @@ export default class WhackAMoleScene extends BaseScene {
     this.scoreText = this.add.text(
       20, 
       80, 
-      `Score: ${this.score}/${this.targetScore}`, 
+      `Score: ${this.moleScore}/${this.targetScore}`, 
       { 
         font: '18px monospace',
         color: '#00ff00'
@@ -83,8 +89,10 @@ export default class WhackAMoleScene extends BaseScene {
     this.hammer.setVisible(false);
     
     // Setup input
-    this.input.on('pointerdown', this.hammerDown, this);
-    this.input.on('pointermove', this.moveHammer, this);
+    if (this.input) {
+      this.input.on('pointerdown', this.hammerDown, this);
+      this.input.on('pointermove', this.moveHammer, this);
+    }
   }
   
   createGameField() {
@@ -119,13 +127,13 @@ export default class WhackAMoleScene extends BaseScene {
   }
   
   moveHammer(pointer: Phaser.Input.Pointer) {
-    if (this.hammer) {
+    if (this.hammer && pointer) {
       this.hammer.x = pointer.x;
       this.hammer.y = pointer.y;
     }
   }
   
-  hammerDown(pointer: Phaser.Input.Pointer) {
+  hammerDown(_: Phaser.Input.Pointer) {
     if (this.hammer) {
       this.hammer.setVisible(true);
       this.hammer.setScale(0.7);
@@ -159,13 +167,13 @@ export default class WhackAMoleScene extends BaseScene {
       mole.setVisible(false);
       
       // Update score
-      this.score++;
+      this.moleScore++;
       if (this.scoreText) {
-        this.scoreText.setText(`Score: ${this.score}/${this.targetScore}`);
+        this.scoreText.setText(`Score: ${this.moleScore}/${this.targetScore}`);
       }
       
       // Check win condition
-      if (this.score >= this.targetScore) {
+      if (this.moleScore >= this.targetScore) {
         this.levelComplete();
       }
     }

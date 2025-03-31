@@ -73,7 +73,9 @@ export default class SnakeScene extends BaseScene {
     );
     
     // Set up keyboard controls
-    this.cursors = this.input.keyboard.createCursorKeys();
+    if (this.input && this.input.keyboard) {
+      this.cursors = this.input.keyboard.createCursorKeys();
+    }
     
     // Create first food
     this.createFood();
