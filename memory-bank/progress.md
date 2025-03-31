@@ -32,7 +32,34 @@
 - Set up React components directory (components/)
 - Established foundation for modular game development
 
+## Phase 2: Game Menu UI - Completed March 31, 2024
+
+### Step 6: Create GameMenu Component
+- Created GameMenu.tsx component with a grid layout for the five games
+- Implemented retro-styled UI with Tailwind CSS and shadcn/ui buttons
+- Added pixel-text class for retro typography
+- Each game button triggers a selection function when clicked
+
+### Step 7: Add Game Selection State
+- Added state management in index.tsx for tracking the selected game
+- Implemented conditional rendering to show either the menu or the selected game
+- Added a "Back to Menu" button to return to the game selection screen
+- Updated PhaserGame component to accept the selected game as a prop
+- Modified TestScene to display the selected game's name
+
+### Step 8: Implement URL-Based Navigation
+- Created mappings between game names and URL slugs (e.g., "Whack-a-Mole" → "whack-a-mole")
+- Integrated Next.js useRouter to update URL when games are selected
+- Added logic to extract game slug from URL on page load
+- Created a dynamic [gameSlug].tsx route to handle direct URL access
+- Ensured page refresh preserves the selected game via URL
+
+### Additional Steps
+- Created a BaseScene class that will be used as the foundation for all game scenes
+- Implemented life and level tracking in the BaseScene
+- Added methods for managing game state (updateLives, updateLevel, nextLevel, gameOver)
+
 ## Next Steps
-- Phase 2: Game Menu UI
-- Implementation of actual game scenes
-- Asset creation for each game
+- Phase 3: Game Scene Foundations
+- Implement individual game scenes
+- Create game assets

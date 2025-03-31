@@ -2,7 +2,11 @@ import { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import TestScene from '../scenes/TestScene';
 
-export default function PhaserGame() {
+interface PhaserGameProps {
+  game?: string;
+}
+
+export default function PhaserGame({ game = 'Test' }: PhaserGameProps) {
   const gameRef = useRef<Phaser.Game | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -18,7 +22,7 @@ export default function PhaserGame() {
       physics: {
         default: 'arcade',
         arcade: {
-          gravity: { y: 0 },
+          gravity: { x: 0, y: 0 },
           debug: false
         }
       },
@@ -34,6 +38,11 @@ export default function PhaserGame() {
     // Create the game instance
     gameRef.current = new Phaser.Game(config);
 
+    // Pass the selected game to the scene
+    if (gameRef.current) {
+      gameRef.current.scene.getScene('TestScene')?.events.emit('setGame', game);
+    }
+
     // Cleanup function to destroy the game when the component unmounts
     return () => {
       if (gameRef.current) {
@@ -41,7 +50,7 @@ export default function PhaserGame() {
         gameRef.current = null;
       }
     };
-  }, []);
+  }, [game]);
 
   return <div ref={containerRef} className="w-full h-full" />;
 } 

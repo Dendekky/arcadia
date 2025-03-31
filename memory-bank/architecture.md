@@ -7,16 +7,18 @@ arcade-throwback/
 ├── components/             # React components
 │   ├── ui/                 # shadcn/ui components
 │   │   └── button.tsx      # Customizable button component
+│   ├── GameMenu.tsx        # Game selection menu component
 │   └── PhaserGame.tsx      # Container for mounting Phaser games
 ├── lib/                    # Utility functions
 │   └── utils.ts            # Common utilities (e.g., className merging)
 ├── pages/                  # Next.js pages (routes)
-│   ├── index.tsx           # Homepage with game menu
+│   ├── index.tsx           # Homepage with game menu and game display
 │   └── test-game.tsx       # Test page for Phaser integration
 ├── public/                 # Static assets
 │   ├── sprites/            # Game sprites and images
 │   └── sounds/             # Game audio files
 ├── scenes/                 # Phaser game scenes
+│   ├── BaseScene.ts        # Common base scene with shared functionality
 │   └── TestScene.ts        # Basic test scene for Phaser
 ├── styles/                 # CSS styles
 │   └── globals.css         # Global styles with Tailwind directives
@@ -31,11 +33,15 @@ arcade-throwback/
 
 ### Game Components
 
-- **PhaserGame.tsx**: React component that initializes and mounts a Phaser game instance. Handles the game lifecycle, configuration, and proper cleanup when unmounting.
+- **GameMenu.tsx**: Displays a grid of game options for user selection. Uses shadcn/ui Button components styled with Tailwind CSS for a retro arcade look.
+
+- **PhaserGame.tsx**: React component that initializes and mounts a Phaser game instance. Handles the game lifecycle, configuration, and proper cleanup when unmounting. Accepts a `game` prop to determine which game to display.
 
 ### Game Scenes
 
-- **TestScene.ts**: Basic Phaser scene template that demonstrates the core Phaser lifecycle methods (preload, create, update) and simple text rendering.
+- **BaseScene.ts**: A base class for all game scenes that implements common functionality like life and level tracking, UI elements, and game state management methods.
+
+- **TestScene.ts**: A test scene that demonstrates how to receive and display the selected game. Will be replaced by actual game scenes.
 
 ## Utility Functions
 
@@ -43,8 +49,20 @@ arcade-throwback/
 
 ## Page Structure
 
-- **index.tsx**: Main entry point that will eventually contain the game selection menu.
+- **index.tsx**: Main entry point that contains the game selection menu and game display. Uses state management to switch between the menu and the selected game. Handles URL-based game selection via Next.js router.
+
+- **[gameSlug].tsx**: Dynamic route that handles direct access to game URLs. Redirects to the index page while preserving the game slug in the URL.
+
 - **test-game.tsx**: Test page for verifying Phaser integration, dynamically loads the PhaserGame component.
+
+## Data Flow
+
+1. **URL Parsing**: On initial load, the app checks for a game slug in the URL path.
+2. **Game Selection**: User clicks a game in the `GameMenu` component or navigates directly to a game URL.
+3. **State & URL Updates**: The selection triggers a state update in `index.tsx` and updates the browser URL.
+4. **Game Loading**: The selected game is passed to the `PhaserGame` component.
+5. **Scene Configuration**: The `PhaserGame` component creates a Phaser game with the appropriate scene.
+6. **Game State Communication**: The selected game information is passed to the scene via Phaser events.
 
 ## Technologies Integration
 

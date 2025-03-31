@@ -42,17 +42,21 @@ This plan outlines the step-by-step process to build a browser-based app with fi
 
 ### Step 7: Add Game Selection State
 - **Instruction**: In `pages/index.tsx`, add a `useState` hook to track the selected game (e.g., `null` or a game name). Pass a setter to `GameMenu` and update it on button clicks.
-- **Test**: Click each button in the browser. Open the React DevTools (`F12`) and check that the state updates to the clicked game’s name (e.g., "Tetris").
+- **Test**: Click each button in the browser. Open the React DevTools (`F12`) and check that the state updates to the clicked game's name (e.g., "Tetris").
+
+### Step 8: Implement URL-Based Navigation
+- **Instruction**: Add mappings between game names and URL slugs. Use Next.js `useRouter` to update the URL when a game is selected (e.g., `/tetris`). Create a dynamic `[gameSlug].tsx` route file to handle direct URL access. On page load, check the URL and set the initial game state based on the slug.
+- **Test**: Select a game and verify the URL updates accordingly (e.g., `http://localhost:3000/tetris`). Refresh the page and verify the same game loads. Try entering game URLs directly and check that the correct game loads.
 
 ---
 
 ## Phase 3: Game Scene Foundations
 
-### Step 8: Create Base Phaser Scene
-- **Instruction**: In `scenes/`, create `BaseScene.ts`. Define a Phaser scene class with properties for lives (3), level (1), and methods `preload()`, `create()`, `update()`. Add a simple text overlay for lives and level using Phaser’s text object.
+### Step 9: Create Base Phaser Scene
+- **Instruction**: In `scenes/`, create `BaseScene.ts`. Define a Phaser scene class with properties for lives (3), level (1), and methods `preload()`, `create()`, `update()`. Add a simple text overlay for lives and level using Phaser's text object.
 - **Test**: Extend `BaseScene` in a new `scenes/TestScene.ts`. Load it dynamically in `pages/index.tsx` when a game is selected. Run `npm run dev`, select a game, and verify a canvas appears with "Lives: 3" and "Level: 1" text.
 
-### Step 9: Add Asset Folders and Test Assets
+### Step 10: Add Asset Folders and Test Assets
 - **Instruction**: Download or create a sample sprite (e.g., `mole.png`) with Aseprite and a sound (e.g., `bonk.wav`) with Bfxr. Place them in `public/sprites/` and `public/sounds/`.
 - **Test**: In `TestScene.ts`, preload the sprite and sound (`this.load.image`, `this.load.audio`), then add the sprite and play the sound in `create()`. Run `npm run dev`, select a game, and verify the sprite appears and sound plays on load.
 
@@ -60,23 +64,23 @@ This plan outlines the step-by-step process to build a browser-based app with fi
 
 ## Phase 4: Implement Individual Games
 
-### Step 10: Build Whack-a-Mole Scene
+### Step 11: Build Whack-a-Mole Scene
 - **Instruction**: Create `scenes/WhackAMoleScene.ts`. Extend `BaseScene`. Add 6 holes, random mole pop-ups, click detection, and level logic (5-15 moles, 20-9s, target scores). Decrease lives on failure, reset to level 1 at 0 lives.
 - **Test**: Load the scene via the menu. Verify moles appear, clicking whacks them, lives decrease on failure, and level 12 is frantic (15 moles, 9s).
 
-### Step 11: Build Tetris Scene
+### Step 12: Build Tetris Scene
 - **Instruction**: Create `scenes/TetrisScene.ts`. Extend `BaseScene`. Add a 10x20 grid, falling tetrominoes, rotation/movement, and line-clearing logic. Implement levels (5-27 lines) with increasing drop speed.
 - **Test**: Load the scene. Verify tetrominoes fall, rotate, stack, clear lines, and level 12 is fast with 27 lines required.
 
-### Step 12: Build Snake Scene
+### Step 13: Build Snake Scene
 - **Instruction**: Create `scenes/SnakeScene.ts`. Extend `BaseScene`. Add a 15x15 grid, snake movement, food spawning, and growth logic. Implement levels (target length 10-32) with speed/obstacles.
 - **Test**: Load the scene. Verify snake moves, grows, crashes reduce lives, and level 12 has moving obstacles.
 
-### Step 13: Build Ping Pong Scene
+### Step 14: Build Ping Pong Scene
 - **Instruction**: Create `scenes/PingPongScene.ts`. Extend `BaseScene`. Add player/AI paddles, ball physics, and scoring. Implement levels (5-27 points) with faster ball/smaller AI paddle.
 - **Test**: Load the scene. Verify ball bounces, scoring works, lives decrease if AI wins, and level 12 is challenging.
 
-### Step 14: Build Shooting Game Scene
+### Step 15: Build Shooting Game Scene
 - **Instruction**: Create `scenes/ShootingGameScene.ts`. Extend `BaseScene`. Add ship movement, shooting, enemy waves, and boss levels (3, 7, 12). Implement levels (10-30 enemies, bosses with 20-50 HP).
 - **Test**: Load the scene. Verify ship shoots, enemies spawn, bosses appear at 3/7/12, and level 12 has a tough boss.
 
@@ -84,11 +88,11 @@ This plan outlines the step-by-step process to build a browser-based app with fi
 
 ## Phase 5: Polish and Integration
 
-### Step 15: Add Game Over and Level Transition
+### Step 16: Add Game Over and Level Transition
 - **Instruction**: In `BaseScene.ts`, add a shadcn/ui `Dialog` (via a React callback) for "Game Over" (0 lives) and "Level Cleared" (target met). Reset or advance accordingly.
 - **Test**: Fail a level in any game. Verify "Game Over" dialog appears at 0 lives and resets to level 1. Clear a level and verify "Level Cleared" advances to the next.
 
-### Step 16: Style Menu and Overlays
+### Step 17: Style Menu and Overlays
 - **Instruction**: Update `GameMenu.tsx` and scene overlays with Tailwind for a consistent retro look (e.g., `font-mono`, `text-green-500`, `bg-gray-900`, pixelated borders).
 - **Test**: Run `npm run dev`. Verify the menu and in-game overlays (lives, level) have a cohesive 8-bit aesthetic.
 
@@ -96,11 +100,11 @@ This plan outlines the step-by-step process to build a browser-based app with fi
 
 ## Phase 6: Deployment
 
-### Step 17: Build and Test Locally
+### Step 18: Build and Test Locally
 - **Instruction**: Run `npm run build` then `npm run start`. Open `http://localhost:3000`.
 - **Test**: Verify all five games load, play correctly, and UI behaves as expected in the production build.
 
-### Step 18: Deploy to Vercel
+### Step 19: Deploy to Vercel
 - **Instruction**: Initialize a Git repo (`git init`), commit all changes (`git add .`, `git commit -m "Initial build"`), push to a GitHub repo, and link it to Vercel via their dashboard. Deploy the app.
 - **Test**: Visit the deployed URL (e.g., `arcade-throwback.vercel.app`). Verify the app loads, all games work, and no errors appear in the console (`F12`).
 
